@@ -18,9 +18,10 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Install dependencies
+      - name: Install and Upgrade Dependencies
         run: |
           cd simple_live_app
+          flutter pub upgrade flutter_inappwebview permission_handler
           flutter pub get
 
       - name: Enable Windows Build

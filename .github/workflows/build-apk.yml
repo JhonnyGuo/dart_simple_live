@@ -29,10 +29,28 @@ jobs:
           cd simple_live_app
           flutter pub get
 
+      - name: Bypass Android Signing Configurations
+        run: |
+         
+          cd simple_live_app/android/app
+                    
+          python3 -c "
+          with open('build.gradle.kts', 'r') as f:
+              content = f.read()
+          
+         
+          content = content.replace('signingConfig = signingConfigs.getByName(\"release\")', 'signingConfig = signingConfigs.getByName(\"debug\")')
+         
+          content = content.replace('as String', '.toString()')
+          
+          with open('build.gradle.kts', 'w') as f:
+              f.write(content)
+          "
+
       - name: Build APK
         run: |
           cd simple_live_app
-          flutter build apk --release --android-skip-build-dependency-validation --build-name=1.0.0 --build-number=1
+          flutter build apk --release --android-skip-build-dependency-validation
 
       - name: Create Release and Upload APK
         uses: softprops/action-gh-release@v2

@@ -1,7 +1,7 @@
 name: Build and Release APK
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          submodules: false  
+          submodules: false
 
       - name: Set up Java
         uses: actions/setup-java@v5
@@ -31,18 +31,12 @@ jobs:
 
       - name: Bypass Android Signing Configurations
         run: |
-         
           cd simple_live_app/android/app
-                    
           python3 -c "
           with open('build.gradle.kts', 'r') as f:
               content = f.read()
-          
-         
           content = content.replace('signingConfig = signingConfigs.getByName(\"release\")', 'signingConfig = signingConfigs.getByName(\"debug\")')
-         
           content = content.replace('as String', '.toString()')
-          
           with open('build.gradle.kts', 'w') as f:
               f.write(content)
           "

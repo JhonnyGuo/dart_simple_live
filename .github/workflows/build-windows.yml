@@ -29,15 +29,39 @@ jobs:
 
       - name: Inject Fix for MSVC Deprecation Error
         run: |
-          cd simple_live_app/windows/Runner
+          cd simple_live_app/windows
           python3 -c "
-          with open('CMakeLists.txt', 'r') as f:
-              content = f.read()
-          fix_line = 'add_compile_definitions(_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS)\n'
-          if fix_line not in content:
-              content = fix_line + content
-          with open('CMakeLists.txt', 'w') as f:
-              f.write(content)
+          import os
+
+          runner_cmake = 'Runner/CMakeLists.txt'
+          if os.path.exists(runner_cmake):
+              with open(runner_cmake, 'r') as f:
+                  content = f.read()
+              fix_flag = 'set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} /D_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS\")\n'
+              if '_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS' not in content:
+                  content = fix_flag + content
+              with open(runner_cmake, 'w') as f:
+                  f.write(content)
+
+          top_cmake = 'CMakeLists.txt'
+          if os.path.exists(top_cmake):
+              with open(top_cmake, 'r') as f:
+                  content = f.read()
+              fix_definition = 'add_compile_definitions(_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS)\n'
+              if '_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS' not in content:
+                  lines = content.splitlines()
+                  inserted = False
+                  for i, line in enumerate(lines):
+                      if 'project(' in line.lower():
+                          lines.insert(i + 1, fix_definition)
+                          inserted = True
+                          break
+                  if not inserted:
+                      lines.insert(0, fix_definition)
+                  content = '\n'.join(lines)
+              with open(top_cmake, 'w') as f:
+                  f.write(content)
+          print('MSVC Deprecation Fix Injected Successfully!')
           "
 
       - name: Build Windows App

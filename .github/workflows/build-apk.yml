@@ -32,7 +32,7 @@ jobs:
       - name: Build APK
         run: |
           cd simple_live_app
-          flutter build apk --release
+          flutter build apk --release --android-skip-build-dependency-validation --build-name=1.0.0 --build-number=1
 
       - name: Create Release and Upload APK
         uses: softprops/action-gh-release@v2

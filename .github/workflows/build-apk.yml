@@ -53,12 +53,11 @@ jobs:
           flutter build apk --release --android-skip-build-dependency-validation
 
       - name: Create Release and Upload APK
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: "v${{ github.run_number }}"
-          name: "自动编译apk v${{ github.run_number }}"
-          draft: false
-          prerelease: false
-          files: simple_live_app/build/app/outputs/flutter-apk/app-release.apk
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="v${{ github.run_number }}"
+          gh release create "$TAG_NAME" \
+            --title "自动编译apk $TAG_NAME" \
+            --notes "由 GitHub Actions 自动编译生成" \
+            simple_live_app/build/app/outputs/flutter-apk/app-release.apk

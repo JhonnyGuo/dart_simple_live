@@ -53,6 +53,6 @@ jobs:
           TAG_NAME="android_v$(date -u +'%Y%m%d_%H%M')"
           
           gh release create "$TAG_NAME" \
-            --title "自动编译apk $TAG_NAME" \
+            --title "自动编译Android版本 $TAG_NAME" \
             --notes "由 GitHub Actions 自动编译生成" \
             simple_live_app/build/app/outputs/flutter-apk/app-release.apk

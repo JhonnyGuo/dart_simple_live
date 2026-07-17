@@ -33,7 +33,7 @@ jobs:
           flutter pub get
           flutter build apk --release --android-skip-build-dependency-validation
 
-      - name: Create Release and Upload APK
+      - name: Package and Release to GitHub
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -41,6 +41,6 @@ jobs:
           mv simple_live_app/build/app/outputs/flutter-apk/app-release.apk simple_live_app/build/app/outputs/flutter-apk/simple_live_android.apk
           
           gh release create "$TAG_NAME" \
-            --title "自动编译Android版本 $TAG_NAME" \
+            --title "自动编译Android版 $TAG_NAME" \
             --notes "由 GitHub Actions 自动编译生成" \
             simple_live_app/build/app/outputs/flutter-apk/simple_live_android.apk
